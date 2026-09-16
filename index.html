@@ -281,17 +281,20 @@
               </a>
             </div>
 
-            <!-- Switcher: YouTube vs Interactive Sim -->
-            <div class="flex bg-slate-100 p-1.5 rounded-xl text-xs font-bold gap-1">
-              <button id="btn-show-youtube" onclick="app.switchMediaMode('youtube')" class="flex-1 py-2 rounded-lg bg-orange-500 text-white shadow-sm font-bold transition flex items-center justify-center gap-1 cursor-pointer">
-                <span>🎬 Video YouTube</span>
+            <!-- Switcher: 3 Chế độ (YouTube, MP4 Offline, Mô phỏng) -->
+            <div class="grid grid-cols-3 bg-slate-100 p-1.5 rounded-xl text-[11px] font-bold gap-1">
+              <button id="btn-show-youtube" onclick="app.switchMediaMode('youtube')" class="py-2 rounded-lg bg-orange-500 text-white shadow-sm font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                <span>🎬 YouTube</span>
               </button>
-              <button id="btn-show-simlab" onclick="app.switchMediaMode('simlab')" class="flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition flex items-center justify-center gap-1 cursor-pointer">
-                <span>🧪 Mô phỏng Thí nghiệm (Offline)</span>
+              <button id="btn-show-localvideo" onclick="app.switchMediaMode('localvideo')" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                <span>📁 MP4 Máy Tính</span>
+              </button>
+              <button id="btn-show-simlab" onclick="app.switchMediaMode('simlab')" class="py-2 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                <span>🧪 Mô phỏng TN</span>
               </button>
             </div>
 
-            <!-- YouTube Video View -->
+            <!-- 1. YouTube Video View -->
             <div id="video-youtube-view" class="space-y-3">
               <div>
                 <label class="block text-[11px] font-bold text-slate-500 mb-1">Chọn bài giảng chuẩn SGK KNTT 7:</label>
@@ -303,7 +306,13 @@
                 </select>
               </div>
 
-              <!-- Responsive Video Frame with Error 153 protection -->
+              <!-- Quick Launch Pop-out Button (100% bypasses Error 153) -->
+              <button id="btn-popout-video" onclick="app.openVideoPopout()" class="w-full py-2.5 px-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-md shadow-red-600/25 transition cursor-pointer">
+                <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                <span>XEM CỬA SỔ RIÊNG (100% KHÔNG BỊ LỖI 153) ➔</span>
+              </button>
+
+              <!-- Responsive Video Frame -->
               <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 shadow-inner relative">
                 <iframe 
                   id="theory-video-frame" 
@@ -320,16 +329,40 @@
               <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-2">
                 <div class="flex items-center justify-between gap-2">
                   <span class="font-bold flex items-center gap-1.5 text-xs">
-                    <i data-lucide="external-link" class="w-4 h-4 text-amber-600 shrink-0"></i>
-                    <span>Xem trực tiếp trên YouTube:</span>
+                    <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                    <span>Cách xem video không bị lỗi 153:</span>
                   </span>
-                  <a id="video-direct-btn" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm text-xs transition shrink-0">
+                  <a id="video-direct-btn" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm text-xs transition shrink-0">
                     <span>Mở tab mới</span> ➔
                   </a>
                 </div>
                 <p class="text-[11px] text-amber-700 leading-relaxed">
-                  💡 <em>Lưu ý:</em> Nếu trình duyệt hoặc mạng trường học chặn khung nhúng YouTube (báo Lỗi 153/Bảo mật), Thầy/Cô có thể bấm nút <strong>Mở tab mới</strong> ở trên hoặc chọn tab <strong>"🧪 Mô phỏng Thí nghiệm"</strong> để tương tác 100% không cần mạng!
+                  💡 <em>Ghi chú:</em> Khi mở trang bằng cách nhấp đúp tệp (giao thức <code>file://</code>), YouTube sẽ chặn khung nhúng và báo <strong>Lỗi 153</strong>. Thầy/Cô chỉ cần bấm nút đỏ <strong>"XEM CỬA SỔ RIÊNG"</strong> ở trên, hoặc khởi động bằng tệp <strong>Khoi-Dong-Bai-Hoc.bat</strong> trong thư mục dự án!
                 </p>
+              </div>
+            </div>
+
+            <!-- 2. Local Video View (100% Offline MP4) -->
+            <div id="video-local-view" class="hidden space-y-3">
+              <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 shadow-inner relative flex items-center justify-center">
+                <video id="theory-local-player" controls class="w-full h-full hidden object-contain"></video>
+                <div id="local-video-empty" class="text-center p-5 text-slate-300 space-y-2">
+                  <div class="w-12 h-12 mx-auto rounded-full bg-slate-800 flex items-center justify-center text-orange-400">
+                    <i data-lucide="film" class="w-6 h-6"></i>
+                  </div>
+                  <p class="text-xs font-bold text-white">Chưa chọn tệp video bài giảng</p>
+                  <p class="text-[11px] text-slate-400 max-w-xs mx-auto">Thầy/Cô có thể chọn bất kỳ tệp video <code>.mp4</code> nào trên máy tính để phát mượt mà trực tiếp trong lớp học mà không cần Internet.</p>
+                  <button onclick="document.getElementById('local-video-file-input').click()" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold shadow-md transition cursor-pointer inline-flex items-center gap-1.5">
+                    <i data-lucide="upload" class="w-4 h-4"></i> Chọn video từ máy tính
+                  </button>
+                </div>
+              </div>
+              <input type="file" id="local-video-file-input" accept="video/mp4,video/webm,video/ogg" class="hidden" onchange="app.handleLocalVideoFile(event)">
+              <div class="p-2.5 bg-blue-50 rounded-xl border border-blue-200 text-[11px] text-blue-900 flex items-center justify-between">
+                <span class="font-semibold flex items-center gap-1">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5 text-blue-600"></i> Video ngoại tuyến (Không lỗi 153, không cần mạng)
+                </span>
+                <button onclick="document.getElementById('local-video-file-input').click()" class="font-bold text-blue-700 hover:underline">Tải tệp khác ➔</button>
               </div>
             </div>
 
@@ -946,6 +979,6 @@
   </div>
 
   <!-- Scripts (Chạy chuẩn 100% không phụ thuộc máy chủ và không bị lỗi CORS) -->
-  <script src="js/app.bundle.js?v=5.0"></script>
+  <script src="js/app.bundle.js?v=5.1"></script>
 </body>
 </html>

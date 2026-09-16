@@ -1564,26 +1564,63 @@
       this.initSimLab();
     }
 
+    openVideoPopout() {
+      sound.playClick();
+      const select = document.getElementById("video-source-select");
+      const vidId = select ? select.value : "a4CtFYYYAPA";
+      const url = `https://www.youtube.com/watch?v=${vidId}`;
+      const w = 1000, h = 600;
+      const left = Math.max(0, Math.round((window.screen.width - w) / 2));
+      const top = Math.max(0, Math.round((window.screen.height - h) / 2));
+      window.open(url, "YTVideoTheater", `width=${w},height=${h},top=${top},left=${left},menubar=no,toolbar=no,location=no,status=no`);
+    }
+
+    handleLocalVideoFile(event) {
+      sound.playClick();
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const player = document.getElementById("theory-local-player");
+      const emptyBox = document.getElementById("local-video-empty");
+      if (player) {
+        player.src = URL.createObjectURL(file);
+        player.classList.remove("hidden");
+        if (emptyBox) emptyBox.classList.add("hidden");
+        player.play().catch(() => {});
+      }
+    }
+
     switchMediaMode(mode) {
       sound.playClick();
       const viewYt = document.getElementById("video-youtube-view");
+      const viewLocal = document.getElementById("video-local-view");
       const viewSim = document.getElementById("video-simlab-view");
       const btnShowYt = document.getElementById("btn-show-youtube");
+      const btnShowLocal = document.getElementById("btn-show-localvideo");
       const btnShowSim = document.getElementById("btn-show-simlab");
 
+      const activeBtnClass = "py-2 rounded-lg bg-orange-500 text-white shadow-sm font-bold transition flex items-center justify-center gap-1 cursor-pointer";
+      const inactiveBtnClass = "py-2 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition flex items-center justify-center gap-1 cursor-pointer";
+
+      // Hide all
+      if (viewYt) viewYt.classList.add("hidden");
+      if (viewLocal) viewLocal.classList.add("hidden");
+      if (viewSim) viewSim.classList.add("hidden");
+      if (btnShowYt) btnShowYt.className = inactiveBtnClass;
+      if (btnShowLocal) btnShowLocal.className = inactiveBtnClass;
+      if (btnShowSim) btnShowSim.className = inactiveBtnClass;
+
       if (mode === "simlab") {
-        if (viewYt) viewYt.classList.add("hidden");
         if (viewSim) viewSim.classList.remove("hidden");
-        if (btnShowSim) btnShowSim.className = "flex-1 py-2 rounded-lg bg-orange-500 text-white shadow-sm font-bold transition flex items-center justify-center gap-1 cursor-pointer";
-        if (btnShowYt) btnShowYt.className = "flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition flex items-center justify-center gap-1 cursor-pointer";
+        if (btnShowSim) btnShowSim.className = activeBtnClass;
         setTimeout(() => {
           this.initSimLab();
         }, 50);
+      } else if (mode === "localvideo") {
+        if (viewLocal) viewLocal.classList.remove("hidden");
+        if (btnShowLocal) btnShowLocal.className = activeBtnClass;
       } else {
         if (viewYt) viewYt.classList.remove("hidden");
-        if (viewSim) viewSim.classList.add("hidden");
-        if (btnShowYt) btnShowYt.className = "flex-1 py-2 rounded-lg bg-orange-500 text-white shadow-sm font-bold transition flex items-center justify-center gap-1 cursor-pointer";
-        if (btnShowSim) btnShowSim.className = "flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition flex items-center justify-center gap-1 cursor-pointer";
+        if (btnShowYt) btnShowYt.className = activeBtnClass;
       }
       this.refreshIcons();
     }
