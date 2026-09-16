@@ -13,9 +13,8 @@
     subject: "Khoa học tự nhiên 7 (Bộ sách Kết nối tri thức với cuộc sống)",
     videos: [
       { id: "a4CtFYYYAPA", title: "1. VietJack: Bài 8 Tốc độ chuyển động (Chuẩn KNTT 7)" },
-      { id: "J3g7yT6kG3I", title: "2. Thầy Quang: Bài 8 Tốc độ chuyển động (KNTT 7)" },
-      { id: "5zpZPaQOnWA", title: "3. OLM: Bài 8 Tốc độ chuyển động (Phần 1)" },
-      { id: "llIbQUJ0G6k", title: "4. Thế Giới KHTN: Bài 8 Tốc độ chuyển động" }
+      { id: "llIbQUJ0G6k", title: "2. Thế Giới KHTN: Bài 8 Tốc độ chuyển động" },
+      { id: "5zpZPaQOnWA", title: "3. OLM.VN: Bài 8 Tốc độ chuyển động (Phần 1)" }
     ],
     sections: [
       {
@@ -1541,7 +1540,24 @@
       const viewYt = document.getElementById("video-youtube-view");
       const viewSim = document.getElementById("video-simlab-view");
 
+      const videoMeta = {
+        "a4CtFYYYAPA": { tag: "VietJack • KHTN 7", title: "1. VietJack: Bài 8 Tốc độ chuyển động (Chuẩn KNTT 7)" },
+        "llIbQUJ0G6k": { tag: "Thế Giới KHTN • KHTN 7", title: "2. Thế Giới KHTN: Bài 8 Tốc độ chuyển động" },
+        "5zpZPaQOnWA": { tag: "OLM.VN • KHTN 7", title: "3. OLM.VN: Bài 8 Tốc độ chuyển động (Phần 1)" }
+      };
+
       const updateVideo = (vidId) => {
+        const poster = document.getElementById("theory-video-poster");
+        const titleEl = document.getElementById("theory-video-title");
+        const tagEl = document.getElementById("theory-video-tag");
+
+        if (poster) {
+          poster.src = `https://img.youtube.com/vi/${vidId}/hqdefault.jpg`;
+        }
+        if (videoMeta[vidId]) {
+          if (titleEl) titleEl.textContent = videoMeta[vidId].title;
+          if (tagEl) tagEl.textContent = videoMeta[vidId].tag;
+        }
         if (frame) {
           frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
           frame.src = `https://www.youtube-nocookie.com/embed/${vidId}?rel=0`;

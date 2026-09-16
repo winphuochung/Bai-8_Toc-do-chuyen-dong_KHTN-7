@@ -300,45 +300,63 @@
                 <label class="block text-[11px] font-bold text-slate-500 mb-1">Chọn bài giảng chuẩn SGK KNTT 7:</label>
                 <select id="video-source-select" class="w-full text-xs font-semibold p-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:border-orange-500">
                   <option value="a4CtFYYYAPA">1. VietJack: Bài 8 Tốc độ chuyển động (Chuẩn KNTT 7)</option>
-                  <option value="J3g7yT6kG3I">2. Thầy Quang: Bài 8 Tốc độ chuyển động (KNTT 7)</option>
-                  <option value="5zpZPaQOnWA">3. OLM: Bài 8 Tốc độ chuyển động (Phần 1)</option>
-                  <option value="llIbQUJ0G6k">4. Thế Giới KHTN: Bài 8 Tốc độ chuyển động</option>
+                  <option value="llIbQUJ0G6k">2. Thế Giới KHTN: Bài 8 Tốc độ chuyển động</option>
+                  <option value="5zpZPaQOnWA">3. OLM.VN: Bài 8 Tốc độ chuyển động (Phần 1)</option>
                 </select>
               </div>
 
-              <!-- Quick Launch Pop-out Button (100% bypasses Error 153) -->
-              <button id="btn-popout-video" onclick="app.openVideoPopout()" class="w-full py-2.5 px-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-md shadow-red-600/25 transition cursor-pointer">
-                <i data-lucide="play" class="w-4 h-4 fill-current"></i>
-                <span>XEM CỬA SỔ RIÊNG (100% KHÔNG BỊ LỖI 153) ➔</span>
-              </button>
+              <!-- Interactive Video Player Card (Tránh hoàn toàn lỗi 153 của iframe) -->
+              <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-900 shadow-md border border-slate-200 group">
+                <!-- Video Poster Image -->
+                <img id="theory-video-poster" 
+                  src="https://img.youtube.com/vi/a4CtFYYYAPA/hqdefault.jpg" 
+                  alt="Ảnh bìa bài giảng" 
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100">
+                
+                <!-- Dark Gradient Overlay with Info & Big Red Play Button -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/50 flex flex-col justify-between p-3.5 sm:p-4">
+                  <!-- Header badges -->
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-600 text-white rounded-lg text-[11px] font-bold shadow-md">
+                      <i data-lucide="play" class="w-3 h-3 fill-white"></i> Bài Giảng Chuẩn
+                    </span>
+                    <span id="theory-video-tag" class="px-2.5 py-1 bg-black/60 backdrop-blur-md text-amber-300 rounded-lg text-[11px] font-bold border border-white/10">
+                      VietJack • KHTN 7
+                    </span>
+                  </div>
 
-              <!-- Responsive Video Frame -->
-              <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 shadow-inner relative">
-                <iframe 
-                  id="theory-video-frame" 
-                  class="w-full h-full" 
-                  src="https://www.youtube-nocookie.com/embed/a4CtFYYYAPA?rel=0" 
-                  title="Bài giảng KHTN 7 Bài 8" 
-                  frameborder="0" 
-                  referrerpolicy="strict-origin-when-cross-origin" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  allowfullscreen>
-                </iframe>
+                  <!-- Central Glowing Play Button -->
+                  <div class="flex flex-col items-center justify-center my-auto cursor-pointer" onclick="app.openVideoPopout()">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-2xl shadow-red-600/60 hover:scale-110 active:scale-95 transition-all duration-200">
+                      <i data-lucide="play" class="w-8 h-8 sm:w-9 sm:h-9 fill-white translate-x-0.5"></i>
+                    </div>
+                    <span class="text-white text-xs font-black tracking-wider uppercase mt-2 drop-shadow-md bg-black/50 px-3 py-0.5 rounded-full">
+                      BẤM ĐỂ PHÁT BÀI GIẢNG ▶
+                    </span>
+                  </div>
+
+                  <!-- Bottom Title & Meta -->
+                  <div class="space-y-0.5">
+                    <p id="theory-video-title" class="text-white font-bold text-xs sm:text-sm line-clamp-1 drop-shadow">
+                      1. VietJack: Bài 8 Tốc độ chuyển động (Chuẩn KNTT 7)
+                    </p>
+                    <p class="text-slate-300 text-[11px] flex items-center gap-1">
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> Phát mượt mà chuẩn HD 1080p (Không bị gián đoạn hay dính lỗi)
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-2">
-                <div class="flex items-center justify-between gap-2">
-                  <span class="font-bold flex items-center gap-1.5 text-xs">
-                    <i data-lucide="info" class="w-4 h-4 text-amber-600 shrink-0"></i>
-                    <span>Cách xem video không bị lỗi 153:</span>
-                  </span>
-                  <a id="video-direct-btn" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm text-xs transition shrink-0">
-                    <span>Mở tab mới</span> ➔
-                  </a>
-                </div>
-                <p class="text-[11px] text-amber-700 leading-relaxed">
-                  💡 <em>Ghi chú:</em> Khi mở trang bằng cách nhấp đúp tệp (giao thức <code>file://</code>), YouTube sẽ chặn khung nhúng và báo <strong>Lỗi 153</strong>. Thầy/Cô chỉ cần bấm nút đỏ <strong>"XEM CỬA SỔ RIÊNG"</strong> ở trên, hoặc khởi động bằng tệp <strong>Khoi-Dong-Bai-Hoc.bat</strong> trong thư mục dự án!
-                </p>
+              <!-- Control Action Bar -->
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="app.openVideoPopout()" class="py-2.5 px-3 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 shadow-md shadow-red-600/20 transition cursor-pointer">
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  <span>Mở Cửa Sổ Rạp Chiếu ➔</span>
+                </button>
+                <a id="video-direct-btn" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" rel="noopener noreferrer" class="py-2.5 px-3 bg-slate-800 hover:bg-slate-900 active:bg-black text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition">
+                  <i data-lucide="youtube" class="w-3.5 h-3.5 text-red-400"></i>
+                  <span>Xem trên YouTube</span>
+                </a>
               </div>
             </div>
 
@@ -979,6 +997,6 @@
   </div>
 
   <!-- Scripts (Chạy chuẩn 100% không phụ thuộc máy chủ và không bị lỗi CORS) -->
-  <script src="js/app.bundle.js?v=5.1"></script>
+  <script src="js/app.bundle.js?v=5.2"></script>
 </body>
 </html>
