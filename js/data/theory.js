@@ -4,7 +4,7 @@
 export const THEORY_DATA = {
   lessonTitle: "Bài 8: Tốc độ chuyển động",
   subject: "Khoa học tự nhiên 7 (Bộ sách Kết nối tri thức với cuộc sống)",
-  videoUrl: "https://www.youtube.com/embed/fCq1tq4Yn2g", // Video bài giảng tham khảo KHTN 7
+  videoUrl: "https://www.youtube-nocookie.com/embed/a4CtFYYYAPA?rel=0", // Video bài giảng tham khảo KHTN 7
   sections: [
     {
       id: "concept",

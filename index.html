@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>KHTN 7 - Bài 8: Tốc độ chuyển động (Kết nối tri thức)</title>
   <link rel="icon" type="image/png" href="logo.png?v=2">
   
@@ -296,27 +297,39 @@
                 <label class="block text-[11px] font-bold text-slate-500 mb-1">Chọn bài giảng chuẩn SGK KNTT 7:</label>
                 <select id="video-source-select" class="w-full text-xs font-semibold p-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:border-orange-500">
                   <option value="a4CtFYYYAPA">1. VietJack: Bài 8 Tốc độ chuyển động (Chuẩn KNTT 7)</option>
-                  <option value="llIbQUJ0G6k">2. Thế Giới KHTN: Bài 8 Tốc độ chuyển động</option>
+                  <option value="J3g7yT6kG3I">2. Thầy Quang: Bài 8 Tốc độ chuyển động (KNTT 7)</option>
                   <option value="5zpZPaQOnWA">3. OLM: Bài 8 Tốc độ chuyển động (Phần 1)</option>
+                  <option value="llIbQUJ0G6k">4. Thế Giới KHTN: Bài 8 Tốc độ chuyển động</option>
                 </select>
               </div>
 
-              <!-- Responsive Video Frame -->
+              <!-- Responsive Video Frame with Error 153 protection -->
               <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 shadow-inner relative">
                 <iframe 
                   id="theory-video-frame" 
                   class="w-full h-full" 
-                  src="https://www.youtube.com/embed/a4CtFYYYAPA" 
+                  src="https://www.youtube-nocookie.com/embed/a4CtFYYYAPA?rel=0" 
                   title="Bài giảng KHTN 7 Bài 8" 
                   frameborder="0" 
+                  referrerpolicy="strict-origin-when-cross-origin" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                   allowfullscreen>
                 </iframe>
               </div>
 
-              <div class="p-2.5 bg-orange-50 rounded-xl border border-orange-200 text-[11px] text-orange-800 flex items-center justify-between">
-                <span>💡 Xem video chất lượng cao trên YouTube:</span>
-                <a id="video-direct-btn" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" class="font-extrabold text-orange-700 hover:underline">Xem ngay ➔</a>
+              <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="font-bold flex items-center gap-1.5 text-xs">
+                    <i data-lucide="external-link" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                    <span>Xem trực tiếp trên YouTube:</span>
+                  </span>
+                  <a id="video-direct-btn" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm text-xs transition shrink-0">
+                    <span>Mở tab mới</span> ➔
+                  </a>
+                </div>
+                <p class="text-[11px] text-amber-700 leading-relaxed">
+                  💡 <em>Lưu ý:</em> Nếu trình duyệt hoặc mạng trường học chặn khung nhúng YouTube (báo Lỗi 153/Bảo mật), Thầy/Cô có thể bấm nút <strong>Mở tab mới</strong> ở trên hoặc chọn tab <strong>"🧪 Mô phỏng Thí nghiệm"</strong> để tương tác 100% không cần mạng!
+                </p>
               </div>
             </div>
 
@@ -933,6 +946,6 @@
   </div>
 
   <!-- Scripts (Chạy chuẩn 100% không phụ thuộc máy chủ và không bị lỗi CORS) -->
-  <script src="js/app.bundle.js?v=4.9"></script>
+  <script src="js/app.bundle.js?v=5.0"></script>
 </body>
 </html>

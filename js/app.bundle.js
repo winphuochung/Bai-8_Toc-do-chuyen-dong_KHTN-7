@@ -13,8 +13,9 @@
     subject: "Khoa học tự nhiên 7 (Bộ sách Kết nối tri thức với cuộc sống)",
     videos: [
       { id: "a4CtFYYYAPA", title: "1. VietJack: Bài 8 Tốc độ chuyển động (Chuẩn KNTT 7)" },
-      { id: "llIbQUJ0G6k", title: "2. Thế Giới KHTN: Bài 8 Tốc độ chuyển động" },
-      { id: "5zpZPaQOnWA", title: "3. OLM: Bài 8 Tốc độ chuyển động (Phần 1)" }
+      { id: "J3g7yT6kG3I", title: "2. Thầy Quang: Bài 8 Tốc độ chuyển động (KNTT 7)" },
+      { id: "5zpZPaQOnWA", title: "3. OLM: Bài 8 Tốc độ chuyển động (Phần 1)" },
+      { id: "llIbQUJ0G6k", title: "4. Thế Giới KHTN: Bài 8 Tốc độ chuyển động" }
     ],
     sections: [
       {
@@ -1542,7 +1543,8 @@
 
       const updateVideo = (vidId) => {
         if (frame) {
-          frame.src = `https://www.youtube.com/embed/${vidId}`;
+          frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+          frame.src = `https://www.youtube-nocookie.com/embed/${vidId}?rel=0`;
         }
         if (extLink) {
           extLink.href = `https://www.youtube.com/watch?v=${vidId}`;
