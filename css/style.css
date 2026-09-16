@@ -1,0 +1,119 @@
+/* css/style.css - Ứng dụng Bài 8: Tốc độ chuyển động (KHTN 7 KNTT) */
+
+:root {
+  --primary-orange: #F97316;
+  --primary-orange-dark: #EA580C;
+  --primary-blue: #1E40AF;
+  --primary-blue-light: #3B82F6;
+  --bg-slate: #F8FAFC;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-slate);
+  color: #1E293B;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Hiệu ứng tia lửa Nitro & Combo */
+@keyframes pulse-flame {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 10px #F97316); }
+}
+
+.animate-flame {
+  animation: pulse-flame 0.8s infinite ease-in-out;
+}
+
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.badge-float {
+  animation: float-badge 2s ease-in-out infinite;
+}
+
+/* Speedometer Gauge Styling */
+.speedometer-dial {
+  background: radial-gradient(circle at center, #1E293B 60%, #0F172A 100%);
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Matching Questions Interaction */
+.matching-item {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  user-select: none;
+}
+.matching-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.matching-item.selected {
+  border-color: #F97316 !important;
+  background-color: #FFF7ED !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3) !important;
+}
+.matching-item.matched {
+  border-color: #10B981 !important;
+  background-color: #ECFDF5 !important;
+  opacity: 0.85;
+  cursor: default;
+}
+
+/* Touch Friendly Buttons (Tối thiểu 48px) */
+.btn-touch {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tab Active Indicator */
+.nav-tab.active {
+  color: #EA580C;
+  border-bottom-color: #EA580C;
+  font-weight: 700;
+}
+
+/* Split-screen layout for PvP mode */
+@media (max-width: 768px) {
+  .pvp-split-container {
+    flex-direction: column;
+  }
+}
+
+/* Responsive Table & Code */
+pre, code {
+  font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+/* Print Styling for Teacher Reports */
+@media print {
+  header, nav, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  #teacher-panel {
+    display: block !important;
+  }
+}

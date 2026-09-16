@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KHTN 7 - Bài 8: Tốc độ chuyển động (Kết nối tri thức)</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kntt: {
+              orange: '#F97316',
+              darkOrange: '#EA580C',
+              blue: '#1E40AF',
+              lightBlue: '#3B82F6',
+              slate: '#0F172A',
+              cardBg: '#FFFFFF'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800 antialiased font-sans">
+
+  <!-- ========================================== -->
+  <!-- MÀN HÌNH ĐĂNG NHẬP CỔNG ĐẦU TIÊN (PRE-APP AUTH GATEWAY) -->
+  <!-- ========================================== -->
+  <div id="app-auth-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 overflow-y-auto">
+    <div class="relative w-full max-w-lg bg-white/95 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 my-8">
+      
+      <!-- Top Badges & Logo -->
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold mb-3 border border-orange-200">
+          <span>★</span> KHOA HỌC TỰ NHIÊN 7 • KẾT NỐI TRI THỨC VỚI CUỘC SỐNG
+        </div>
+        <img src="logo.png" alt="Logo KHTN 7 - Thầy Lê Văn Thắng" class="w-36 h-36 sm:w-48 sm:h-48 mx-auto rounded-3xl object-contain drop-shadow-2xl mb-4 flex-shrink-0 transition hover:scale-105 duration-300">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">BÀI 8: TỐC ĐỘ CHUYỂN ĐỘNG</h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">Cổng Đăng nhập Học tập Tương tác & Game Đua xe Grand Prix 1.000m</p>
+      </div>
+
+      <!-- Auth Tabs Toggle -->
+      <div class="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 rounded-2xl mb-6">
+        <button id="auth-tab-btn-student" type="button" class="py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-1.5 bg-white text-orange-600 shadow-sm" onclick="app.switchPreAuthTab('student')">
+          <span>👨‍🎓</span> HỌC SINH
+        </button>
+        <button id="auth-tab-btn-teacher" type="button" class="py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-1.5 text-slate-500 hover:text-slate-800" onclick="app.switchPreAuthTab('teacher')">
+          <span>👩‍🏫</span> GIÁO VIÊN
+        </button>
+      </div>
+
+      <!-- 1. Student Login Form -->
+      <form id="pre-auth-student-form" onsubmit="app.handlePreAuthStudent(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Họ và tên học sinh: <span class="text-rose-500">*</span></label>
+          <input type="text" id="pre-student-name" required placeholder="Nhập họ và tên (Ví dụ: Nguyễn Minh An)..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition bg-slate-50">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Lớp học: <span class="text-rose-500">*</span></label>
+            <select id="pre-student-class" class="w-full px-3 py-3 rounded-xl border border-slate-200 text-sm font-semibold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-orange-500">
+              <option value="7A1">Lớp 7A1</option>
+              <option value="7A2">Lớp 7A2</option>
+              <option value="7A3">Lớp 7A3</option>
+              <option value="7A4">Lớp 7A4</option>
+              <option value="7A5">Lớp 7A5</option>
+              <option value="7A6">Lớp 7A6</option>
+              <option value="7B1">Lớp 7B1</option>
+              <option value="7B2">Lớp 7B2</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Xe đua yêu thích:</label>
+            <select id="pre-student-car" class="w-full px-3 py-3 rounded-xl border border-slate-200 text-sm font-semibold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-orange-500">
+              <option value="🏎️ Xe Cam Bão Táp">🏎️ Xe Cam Bão Táp</option>
+              <option value="🏎️ Xe Xanh Thần Tốc">🏎️ Xe Xanh Thần Tốc</option>
+              <option value="🚀 Tên Lửa Siêu Thanh">🚀 Tên Lửa Siêu Thanh</option>
+              <option value="⚡ Tia Chớp Vàng">⚡ Tia Chớp Vàng</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-touch w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2">
+          <span>🚀 VÀO HỌC & THI ĐẤU ĐUA XE</span>
+        </button>
+      </form>
+
+      <!-- 2. Teacher Login Form -->
+      <form id="pre-auth-teacher-form" onsubmit="app.handlePreAuthTeacher(event)" class="space-y-4 hidden">
+        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 leading-relaxed">
+          💡 Dành cho Thầy/Cô quản lý lớp học, theo dõi kết quả làm bài của học sinh và xuất file điểm LMS.
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Tên đăng nhập / Họ tên Giáo viên: <span class="text-rose-500">*</span></label>
+          <input type="text" id="pre-teacher-name" required placeholder="Nhập tên đăng nhập (Ví dụ: Thầy Minh, Cô Mai, giaovien)..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Mật khẩu: <span class="text-rose-500">*</span></label>
+          <input type="password" id="pre-teacher-password" required placeholder="Nhập mật khẩu Giáo viên..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
+        </div>
+
+        <button type="submit" class="btn-touch w-full py-3.5 rounded-xl font-black text-sm bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white transition shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+          <span>🔐 ĐĂNG NHẬP GIÁO VIÊN</span>
+        </button>
+      </form>
+
+      <!-- Quick Demo / Guest Button -->
+      <div class="mt-5 pt-4 border-t border-slate-100 text-center">
+        <button type="button" onclick="app.quickGuestLogin()" class="text-xs font-bold text-slate-400 hover:text-orange-600 transition inline-flex items-center gap-1">
+          <span>⚡ Trải nghiệm nhanh với tư cách Khách tham quan</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- GIAO DIỆN CHÍNH (CHỈ HIỂN THỊ SAU KHI ĐĂNG NHẬP) -->
+  <!-- ========================================== -->
+  <div id="app-main-content" class="hidden min-h-screen flex flex-col flex-1">
+
+    <!-- ========================================== -->
+    <!-- HEADER & NAVIGATION -->
+    <!-- ========================================== -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between min-h-[5.5rem] sm:min-h-[6rem] py-2">
+          <!-- Logo & Brand -->
+          <div class="flex items-center gap-3 sm:gap-4">
+            <img src="logo.png" alt="Logo KHTN 7 - Thầy Lê Văn Thắng" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-contain drop-shadow-lg flex-shrink-0 transition hover:scale-105 duration-200">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-black text-xl sm:text-2xl text-slate-900 tracking-tight">KHTN 7</span>
+                <span class="px-2.5 py-0.5 text-xs font-black rounded-full bg-orange-100 text-orange-700 border border-orange-200">KNTT</span>
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600 font-bold hidden sm:block">Bài 8: Tốc độ chuyển động • Thầy Lê Văn Thắng</p>
+            </div>
+          </div>
+
+          <!-- Right Quick Actions -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <!-- Audio Toggle -->
+            <button id="btn-sound-toggle" class="p-2 rounded-xl text-slate-600 hover:bg-slate-100 border border-slate-200 transition" title="Bật/Tắt âm thanh">
+              <i data-lucide="volume-2" id="sound-icon" class="w-5 h-5 text-slate-700"></i>
+            </button>
+
+            <!-- User Badge / Auth Trigger -->
+            <div id="user-profile-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-orange-400 transition" onclick="app.openAuthModal()">
+              <div class="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center font-bold text-xs" id="user-avatar-initial">H</div>
+              <div class="text-left hidden sm:block">
+                <p class="text-xs font-bold text-slate-800 leading-tight" id="user-display-name">Học sinh</p>
+                <p class="text-[10px] text-slate-500 leading-tight" id="user-display-role">Đăng nhập</p>
+              </div>
+            </div>
+
+            <!-- Logout Button -->
+            <button id="btn-logout" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-xs font-bold text-rose-600 hover:bg-rose-100 hover:border-rose-300 transition shadow-sm" onclick="app.logout()" title="Đăng xuất và quay lại màn hình đăng nhập">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Đăng xuất</span>
+            </button>
+          </div>
+        </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex space-x-2 sm:space-x-8 overflow-x-auto py-2 scrollbar-none text-sm font-medium border-t border-slate-100">
+        <button class="nav-tab active flex items-center gap-2 py-2 px-3 border-b-2 border-orange-500 text-orange-600 whitespace-nowrap transition" data-tab="tab-theory">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>Lý thuyết & Video</span>
+        </button>
+        <button class="nav-tab flex items-center gap-2 py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-orange-600 whitespace-nowrap transition" data-tab="tab-calculator">
+          <i data-lucide="calculator" class="w-4 h-4"></i>
+          <span>Máy tính & Mô phỏng</span>
+        </button>
+        <button class="nav-tab flex items-center gap-2 py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-orange-600 whitespace-nowrap transition" data-tab="tab-game">
+          <i data-lucide="trophy" class="w-4 h-4"></i>
+          <span class="font-bold text-orange-600 sm:text-slate-600 flex items-center gap-1">
+            Đua xe kiến thức
+            <span class="px-1.5 py-0.2 bg-orange-500 text-white text-[10px] rounded-full">HOT</span>
+          </span>
+        </button>
+        <button class="nav-tab flex items-center gap-2 py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-orange-600 whitespace-nowrap transition" data-tab="tab-quiz">
+          <i data-lucide="check-square" class="w-4 h-4"></i>
+          <span>Ngân hàng 100 câu hỏi</span>
+        </button>
+        <button id="nav-tab-lms" class="nav-tab hidden items-center gap-2 py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-orange-600 whitespace-nowrap transition" data-tab="tab-lms" style="display: none;">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+          <span>Bảng LMS & Giáo viên</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTENT CONTAINER -->
+  <!-- ========================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ---------------------------------------- -->
+    <!-- TAB 1: LÝ THUYẾT & VIDEO SGK KNTT -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-theory" class="tab-pane space-y-6">
+      <!-- Header Banner -->
+      <div class="relative overflow-hidden bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-orange-500/10">
+        <div class="relative z-10 max-w-3xl">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur border border-white/30 text-white mb-3">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Kết nối tri thức với cuộc sống
+          </span>
+          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2">Bài 8: Tốc độ chuyển động</h1>
+          <p class="text-orange-100 text-sm sm:text-base leading-relaxed">
+            Nắm vững khái niệm tốc độ, công thức cốt lõi <span class="font-bold underline text-white">v = s / t</span>, kỹ năng đổi đơn vị chuẩn SI và ứng dụng thực tế trong an toàn giao thông.
+          </p>
+        </div>
+        <div class="absolute -right-8 -bottom-8 opacity-15 pointer-events-none text-white">
+          <i data-lucide="gauge" class="w-64 h-64"></i>
+        </div>
+      </div>
+
+      <!-- Quick Formula Bar -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-xl">v</div>
+          <div>
+            <p class="text-xs text-slate-500 font-semibold uppercase">Tốc độ chuyển động</p>
+            <p class="text-lg font-extrabold text-slate-800">v = s / t</p>
+            <span class="text-xs text-orange-600 font-medium">Đơn vị: m/s hoặc km/h</span>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl">s</div>
+          <div>
+            <p class="text-xs text-slate-500 font-semibold uppercase">Quãng đường đi được</p>
+            <p class="text-lg font-extrabold text-slate-800">s = v · t</p>
+            <span class="text-xs text-blue-600 font-medium">Đơn vị: mét (m) hoặc km</span>
+          </div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xl">t</div>
+          <div>
+            <p class="text-xs text-slate-500 font-semibold uppercase">Thời gian chuyển động</p>
+            <p class="text-lg font-extrabold text-slate-800">t = s / v</p>
+            <span class="text-xs text-emerald-600 font-medium">Đơn vị: giây (s) hoặc giờ (h)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video & Theory Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Main Theory Sections (Left 8 Cols) -->
+        <div class="lg:col-span-8 space-y-6" id="theory-sections-container">
+          <!-- Rendered dynamically by app.js from THEORY_DATA -->
+        </div>
+
+        <!-- Sidebar (Right 4 Cols): Video & Unit Card -->
+        <div class="lg:col-span-4 space-y-6">
+          <!-- Video & Interactive Lab Card -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="video" class="w-5 h-5 text-red-500"></i>
+                <h3 class="font-bold text-slate-800 text-base">Học qua Video & Mô phỏng</h3>
+              </div>
+              <a id="video-external-link" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-red-600 hover:text-red-700 hover:underline flex items-center gap-1 bg-red-50 px-2.5 py-1 rounded-lg border border-red-200 shadow-sm">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Mở YouTube
+              </a>
+            </div>
+
+            <!-- Switcher: YouTube vs Interactive Sim -->
+            <div class="flex bg-slate-100 p-1.5 rounded-xl text-xs font-bold gap-1">
+              <button id="btn-show-youtube" onclick="app.switchMediaMode('youtube')" class="flex-1 py-2 rounded-lg bg-orange-500 text-white shadow-sm font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                <span>🎬 Video YouTube</span>
+              </button>
+              <button id="btn-show-simlab" onclick="app.switchMediaMode('simlab')" class="flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition flex items-center justify-center gap-1 cursor-pointer">
+                <span>🧪 Mô phỏng Thí nghiệm (Offline)</span>
+              </button>
+            </div>
+
+            <!-- YouTube Video View -->
+            <div id="video-youtube-view" class="space-y-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">Chọn bài giảng chuẩn SGK KNTT 7:</label>
+                <select id="video-source-select" class="w-full text-xs font-semibold p-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:border-orange-500">
+                  <option value="a4CtFYYYAPA">1. VietJack: Bài 8 Tốc độ chuyển động (Chuẩn KNTT 7)</option>
+                  <option value="llIbQUJ0G6k">2. Thế Giới KHTN: Bài 8 Tốc độ chuyển động</option>
+                  <option value="5zpZPaQOnWA">3. OLM: Bài 8 Tốc độ chuyển động (Phần 1)</option>
+                </select>
+              </div>
+
+              <!-- Responsive Video Frame -->
+              <div class="aspect-video w-full rounded-xl overflow-hidden bg-slate-900 shadow-inner relative">
+                <iframe 
+                  id="theory-video-frame" 
+                  class="w-full h-full" 
+                  src="https://www.youtube.com/embed/a4CtFYYYAPA" 
+                  title="Bài giảng KHTN 7 Bài 8" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowfullscreen>
+                </iframe>
+              </div>
+
+              <div class="p-2.5 bg-orange-50 rounded-xl border border-orange-200 text-[11px] text-orange-800 flex items-center justify-between">
+                <span>💡 Xem video chất lượng cao trên YouTube:</span>
+                <a id="video-direct-btn" href="https://www.youtube.com/watch?v=a4CtFYYYAPA" target="_blank" class="font-extrabold text-orange-700 hover:underline">Xem ngay ➔</a>
+              </div>
+            </div>
+
+            <!-- Interactive Simulation View (Always works 100% offline!) -->
+            <div id="video-simlab-view" class="hidden space-y-3">
+              <div class="bg-slate-900 rounded-xl p-3 text-white">
+                <div class="flex items-center justify-between text-xs mb-2">
+                  <span class="font-bold text-amber-400">⏱️ Thí nghiệm đo v = s / t</span>
+                  <span id="sim-timer-display" class="font-mono text-emerald-400 font-bold">t = 0.00 s</span>
+                </div>
+                <canvas id="sim-canvas" class="w-full h-28 rounded-lg bg-slate-800 block"></canvas>
+                <div class="mt-2 text-center text-xs">
+                  <span class="text-slate-300">Quãng đường: <strong id="sim-dist-display" class="text-white">s = 0 m</strong></span>
+                  <span class="mx-2">•</span>
+                  <span class="text-slate-300">Tốc độ đo được: <strong id="sim-speed-display" class="text-amber-400">v = 0 m/s</strong></span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <button id="btn-sim-start" class="py-2 px-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
+                  <i data-lucide="play" class="w-3.5 h-3.5"></i> Chạy thí nghiệm
+                </button>
+                <button id="btn-sim-reset" class="py-2 px-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Đặt lại
+                </button>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-500 mb-1">Thử tốc độ các đối tượng SGK:</label>
+                <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+                  <button class="p-1.5 rounded-lg border border-slate-200 hover:border-orange-400 bg-slate-50 text-left font-semibold" onclick="app.setSimPreset('bolt')">🏃 Usain Bolt (10,44 m/s)</button>
+                  <button class="p-1.5 rounded-lg border border-slate-200 hover:border-orange-400 bg-slate-50 text-left font-semibold" onclick="app.setSimPreset('cheetah')">🐆 Báo săn (30 m/s)</button>
+                  <button class="p-1.5 rounded-lg border border-slate-200 hover:border-orange-400 bg-slate-50 text-left font-semibold" onclick="app.setSimPreset('walk')">🚶 Đi bộ (1,5 m/s)</button>
+                  <button class="p-1.5 rounded-lg border border-slate-200 hover:border-orange-400 bg-slate-50 text-left font-semibold" onclick="app.setSimPreset('car')">🚗 Ô tô (20 m/s)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Unit Conversion Quick Reference -->
+          <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white rounded-2xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center gap-2 text-amber-400">
+              <i data-lucide="help-circle" class="w-5 h-5"></i>
+              <h3 class="font-bold text-white text-base">Quy tắc đổi đơn vị vàng</h3>
+            </div>
+            <p class="text-xs text-blue-200 leading-relaxed">
+              Nhớ ngay nguyên tắc <strong>3,6</strong> để làm bài tập không bao giờ nhầm:
+            </p>
+            <div class="space-y-2 pt-1 text-sm font-medium">
+              <div class="bg-white/10 p-3 rounded-xl flex items-center justify-between">
+                <span>m/s ➔ km/h:</span>
+                <span class="font-bold text-amber-300">Nhân với 3,6</span>
+              </div>
+              <div class="bg-white/10 p-3 rounded-xl flex items-center justify-between">
+                <span>km/h ➔ m/s:</span>
+                <span class="font-bold text-emerald-300">Chia cho 3,6</span>
+              </div>
+            </div>
+            <div class="text-[11px] text-blue-300 border-t border-white/10 pt-2">
+              💡 Ví dụ: 10 m/s × 3,6 = 36 km/h. 72 km/h ÷ 3,6 = 20 m/s.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- TAB 2: MÁY TÍNH & MÔ PHỎNG VẬT LÝ -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-calculator" class="tab-pane hidden space-y-6">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="max-w-2xl">
+          <span class="text-xs font-bold text-orange-600 uppercase tracking-wider">Công cụ tương tác</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Máy tính & Mô phỏng Tốc độ</h2>
+          <p class="text-sm text-slate-500 mt-1">Tự do nhập quãng đường, thời gian hoặc vận tốc để máy tính giải toán và đối chiếu với các loài động vật trong SGK.</p>
+        </div>
+
+        <!-- Mode Selectors -->
+        <div class="flex flex-wrap gap-2 mt-6">
+          <button id="btn-calc-speed" class="px-4 py-2 rounded-xl text-sm font-bold bg-orange-500 text-white shadow-sm transition">1. Tìm Tốc độ (v)</button>
+          <button id="btn-calc-dist" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">2. Tìm Quãng đường (s)</button>
+          <button id="btn-calc-time" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">3. Tìm Thời gian (t)</button>
+          <button id="btn-calc-convert" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">4. Đổi đơn vị nhanh</button>
+        </div>
+
+        <!-- Calculator Body -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+          <!-- Inputs Area -->
+          <div class="lg:col-span-6 space-y-4" id="calc-inputs-container">
+            <!-- Dynamic input fields injected by app.js -->
+          </div>
+
+          <!-- Result & Simulation Display -->
+          <div class="lg:col-span-6 flex flex-col justify-between bg-slate-50 border border-slate-200 rounded-2xl p-6" id="calc-result-box">
+            <div>
+              <p class="text-xs font-bold uppercase text-slate-400">Kết quả tính toán</p>
+              <div class="mt-2 flex items-baseline gap-2">
+                <span id="calc-result-primary" class="text-4xl sm:text-5xl font-black text-orange-600">0</span>
+                <span id="calc-result-unit" class="text-xl font-bold text-slate-700">m/s</span>
+              </div>
+              <p id="calc-result-secondary" class="text-sm text-slate-600 font-medium mt-1">Tương đương: 0 km/h</p>
+            </div>
+
+            <!-- Formula explanation badge -->
+            <div id="calc-formula-desc" class="my-4 p-3 bg-white rounded-xl border border-slate-200 text-xs text-slate-600">
+              Công thức áp dụng: <strong>v = s / t</strong>
+            </div>
+
+            <!-- Comparison with world -->
+            <div class="border-t border-slate-200 pt-4">
+              <p class="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
+                <i data-lucide="gauge" class="w-4 h-4 text-blue-600"></i>
+                So sánh với thế giới thực (SGK KNTT):
+              </p>
+              <div id="calc-comparison-list" class="space-y-2 max-h-48 overflow-y-auto pr-1 text-xs">
+                <!-- Comparisons injected here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- TAB 3: GAME ĐUA XE KIẾN THỨC -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-game" class="tab-pane hidden space-y-6">
+      <!-- Game Control Topbar -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-orange-500 text-white flex items-center justify-center font-black text-2xl shadow-lg shadow-orange-500/30">
+            🏎️
+          </div>
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900 leading-tight">Đua xe Kiến thức: Grand Prix KHTN 7</h2>
+            <p class="text-xs text-slate-500">Chặng đua 1000m • Trả lời đúng để tăng tốc Nitro • Cán đích trước để giành Cúp!</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+          <!-- Game Mode Selector -->
+          <select id="game-mode-select" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:border-orange-500" onchange="app.onGameModeChange(this.value)">
+            <option value="vs_ai">Chế độ: Đấu với Bot AI</option>
+            <option value="pvp">Chế độ: 2 Người (PvP Cùng máy - 2 Buồng lái)</option>
+            <option value="online">Chế độ: 2 Người chơi Online (Phòng PIN)</option>
+          </select>
+
+          <!-- AI Difficulty Selector -->
+          <select id="game-diff-select" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:border-orange-500">
+            <option value="medium">Độ khó AI: Vừa (16 m/s)</option>
+            <option value="easy">Độ khó AI: Dễ (11 m/s)</option>
+            <option value="hard">Độ khó AI: Chuyên gia (22 m/s)</option>
+          </select>
+
+          <!-- Action Button -->
+          <button id="btn-start-race" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-md shadow-orange-500/25 flex items-center gap-1.5 transition">
+            <i data-lucide="play" class="w-4 h-4"></i>
+            <span>BẮT ĐẦU ĐUA</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Online Multiplayer Lobby Panel (Hiển thị khi chọn chế độ Online) -->
+      <div id="online-lobby-panel" class="hidden bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 rounded-3xl p-5 border-2 border-blue-500/40 shadow-xl text-white">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-blue-600/30 border border-blue-400/30 flex items-center justify-center text-2xl shadow-inner">
+              🌐
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="text-base font-extrabold text-white">Phòng Thi Đấu Online 2 Người</h3>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-500/30 text-blue-300 border border-blue-400/40 uppercase">P2P Sync</span>
+              </div>
+              <p class="text-xs text-blue-200/80 mt-0.5" id="online-status-desc">Tạo phòng để nhận mã PIN 4 số hoặc nhập mã PIN của bạn bè để thi đấu thời gian thực!</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <!-- Create Room Button -->
+            <button type="button" class="btn-touch px-4 py-2.5 rounded-xl text-xs font-black bg-emerald-500 hover:bg-emerald-600 text-white transition shadow-md shadow-emerald-500/20 flex items-center gap-1.5" onclick="app.onlineCreateRoom()">
+              <span>➕ TẠO PHÒNG MỚI</span>
+            </button>
+
+            <!-- Join Room Box -->
+            <div class="flex items-center gap-1.5 bg-slate-800/80 p-1 rounded-xl border border-white/10">
+              <input type="text" id="input-online-pin" maxlength="4" placeholder="MÃ PIN (4 số)" class="w-28 px-3 py-1.5 rounded-lg text-slate-900 text-xs font-black tracking-widest text-center uppercase bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+              <button type="button" class="btn-touch px-3.5 py-1.5 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-700 text-white transition shadow" onclick="app.onlineJoinRoom()">
+                VÀO PHÒNG
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Room Active State Details -->
+        <div id="online-room-details" class="hidden mt-4 pt-3 border-t border-blue-800/50 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-4">
+            <span class="flex items-center gap-1.5">
+              <span class="text-slate-400">Mã PIN Phòng:</span>
+              <span id="display-online-pin" class="font-black text-amber-400 tracking-widest text-sm bg-amber-400/10 px-2.5 py-0.5 rounded-lg border border-amber-400/30">----</span>
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="text-slate-400">Vai trò của bạn:</span>
+              <span id="display-online-role" class="font-extrabold text-emerald-400">---</span>
+            </span>
+          </div>
+          <div id="display-online-opponent" class="font-bold text-amber-300 flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            <span>Đang chờ Người chơi 2 kết nối...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas Race Track Area -->
+      <div class="bg-slate-900 rounded-3xl p-4 shadow-xl overflow-hidden relative border-4 border-slate-800">
+        <div class="flex items-center justify-between text-white text-xs font-bold mb-2 px-2">
+          <div class="flex items-center gap-4">
+            <span class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span>
+              <span id="label-p1-name">Làn 1: Học sinh</span>
+            </span>
+            <span class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span>
+              <span id="label-p2-name">Làn 2: Bot AI</span>
+            </span>
+          </div>
+          <div class="text-slate-400">Độ dài chặng: 1.000m</div>
+        </div>
+
+        <canvas id="race-canvas" class="w-full rounded-2xl block bg-slate-900 shadow-inner"></canvas>
+
+        <!-- Live Distance Bar -->
+        <div class="mt-3 grid grid-cols-2 gap-4 text-xs font-bold px-2 text-white">
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-orange-400">Tiến độ Làn 1:</span>
+              <span id="gauge-p1-distance">0m / 1000m</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+              <div id="bar-p1-progress" class="bg-orange-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="text-blue-400">Tiến độ Làn 2:</span>
+              <span id="gauge-p2-distance">0m / 1000m</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+              <div id="bar-p2-progress" class="bg-blue-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question & HUD Interaction Area -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- HUD Gauges (Left 4 cols) -->
+        <div class="lg:col-span-4 space-y-4">
+          <!-- Speedometer & Combo Card -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tốc độ hiện tại</p>
+            <div class="relative w-36 h-36 mx-auto rounded-full speedometer-dial flex flex-col items-center justify-center text-white border-4 border-slate-700">
+              <span id="hud-speedometer-val" class="text-4xl font-black text-amber-400">0</span>
+              <span class="text-[11px] font-semibold uppercase text-slate-300">km/h</span>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-2 text-left">
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <p class="text-[10px] text-slate-500 font-bold uppercase">Chuỗi Combo</p>
+                <div class="flex items-center gap-1">
+                  <span class="text-lg">🔥</span>
+                  <span id="hud-combo-val" class="text-xl font-extrabold text-orange-600">0x</span>
+                </div>
+              </div>
+              <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <p class="text-[10px] text-slate-500 font-bold uppercase">Điểm số</p>
+                <div class="flex items-center gap-1">
+                  <span class="text-lg">🏆</span>
+                  <span id="hud-score-val" class="text-xl font-extrabold text-blue-600">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Helper Rules Card -->
+          <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 text-xs text-amber-900 space-y-1.5">
+            <p class="font-bold flex items-center gap-1.5 text-amber-800">
+              <i data-lucide="info" class="w-4 h-4"></i> Luật chơi Vượt Chướng Ngại Vật:
+            </p>
+            <p>• 🏎️ <strong>Xe chạy liên tục</strong> tự động trên đường đua 1.000m.</p>
+            <p>• 🚧 <strong>4 Trạm Chướng ngại vật</strong> (200m, 450m, 700m, 880m): Xe sẽ dừng lại trước barie.</p>
+            <p>• ⚡ <strong>Trả lời đúng:</strong> Nâng rào chắn, phụt lửa Nitro tăng tốc <strong>108 km/h</strong> phóng tiếp!</p>
+            <p>• ⚠️ <strong>Trả lời sai:</strong> Rào không mở, xe dừng chịu phạt và xả khói cảnh báo.</p>
+            <p>• 🤖 <strong>Đối đầu Bot AI:</strong> Bot cũng dừng tại trạm và tự giải bài; ai giải nhanh hơn sẽ cán đích trước!</p>
+          </div>
+        </div>
+
+        <!-- Question Area Container (Right 8 cols) -->
+        <div class="lg:col-span-8 flex flex-col gap-4" id="game-questions-container">
+          
+          <!-- Cockpit Làn 1: Học sinh 1 (Màu Cam) -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between flex-1 transition-all duration-300" id="game-question-box">
+            <div id="game-question-body">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                <span id="game-q-type-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-orange-100 text-orange-700">Trắc nghiệm</span>
+                <span id="game-q-turn-badge" class="text-xs font-bold text-slate-500">Làn 1: Học sinh</span>
+              </div>
+              <h3 id="game-q-title" class="text-base sm:text-lg font-extrabold text-slate-800 mb-4">
+                Nhấn nút "BẮT ĐẦU ĐUA" ở trên để khởi động máy! Các xe sẽ chạy liên tục và dừng trước các chướng ngại vật để giải câu hỏi vật lý!
+              </h3>
+              <div id="game-q-options" class="space-y-3">
+                <!-- Options rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Explanation Feedback Alert Làn 1 -->
+            <div id="game-feedback-box" class="hidden mt-4 p-4 rounded-xl text-sm">
+              <!-- Feedback content -->
+            </div>
+          </div>
+
+          <!-- Cockpit Làn 2: Người chơi 2 (Màu Xanh - Bộ câu hỏi độc lập 100% không trùng lặp) -->
+          <div class="bg-white rounded-2xl p-6 border-2 border-blue-400 shadow-sm hidden flex-col justify-between flex-1 transition-all duration-300" id="game-p2-question-box">
+            <div id="game-p2-question-body">
+              <div class="flex items-center justify-between pb-3 border-b border-blue-100 mb-4">
+                <span id="game-p2-q-type-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800">Câu hỏi riêng Làn 2</span>
+                <span id="game-p2-q-turn-badge" class="text-xs font-bold text-blue-600">Làn 2: Người chơi 2</span>
+              </div>
+              <h3 id="game-p2-q-title" class="text-base sm:text-lg font-extrabold text-slate-800 mb-4">
+                Câu hỏi của Người chơi 2 sẽ xuất hiện tại đây khi bấm Bắt đầu đua!
+              </h3>
+              <div id="game-p2-q-options" class="space-y-3">
+                <!-- P2 Options rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- Explanation Feedback Alert Làn 2 -->
+            <div id="game-p2-feedback-box" class="hidden mt-4 p-4 rounded-xl text-sm">
+              <!-- P2 Feedback content -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- TAB 4: LUYỆN TẬP 100 CÂU HỎI THEO DẠNG -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-quiz" class="tab-pane hidden space-y-6">
+      <!-- Quiz Filter Bar -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">Luyện tập theo Dạng bài (100 câu)</h2>
+            <p class="text-xs text-slate-500">Đầy đủ 5 dạng: Trắc nghiệm, Đúng/Sai, Điền khuyết, Ghép cột, Tự luận tính toán.</p>
+          </div>
+
+          <!-- Filters -->
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="quiz-filter-category" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none">
+              <option value="all">Tất cả 5 dạng bài</option>
+              <option value="mcq">1. Trắc nghiệm (20 câu)</option>
+              <option value="true_false">2. Đúng / Sai (20 câu)</option>
+              <option value="fill_in_blank">3. Điền khuyết (20 câu)</option>
+              <option value="matching">4. Ghép cột (20 câu)</option>
+              <option value="short_answer">5. Tự luận tính toán (20 câu)</option>
+            </select>
+
+            <select id="quiz-filter-count" class="text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none">
+              <option value="10">Số câu: 10 câu</option>
+              <option value="5">Số câu: 5 câu</option>
+              <option value="20">Số câu: 20 câu</option>
+            </select>
+
+            <button id="btn-start-quiz" class="px-4 py-2 rounded-xl font-bold text-xs bg-orange-500 text-white hover:bg-orange-600 transition shadow-sm">
+              LÀM BÀI NGAY
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice Screen Area -->
+      <div id="quiz-practice-area" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-3">
+            <span id="quiz-progress-text" class="text-xs font-bold text-slate-500 uppercase">Câu hỏi 1 / 10</span>
+            <span id="quiz-badge-type" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-blue-100 text-blue-700">Trắc nghiệm</span>
+          </div>
+          <div class="text-xs font-bold text-slate-600">
+            Điểm: <span id="quiz-score-display" class="text-orange-600 text-sm font-extrabold">0</span>
+          </div>
+        </div>
+
+        <!-- Question View Container -->
+        <div id="quiz-q-content" class="space-y-4">
+          <!-- Dynamically filled -->
+        </div>
+
+        <!-- Feedback & Solution Steps -->
+        <div id="quiz-explanation-box" class="hidden p-4 rounded-2xl text-sm leading-relaxed">
+          <!-- Detailed solution rendered here -->
+        </div>
+
+        <!-- Action Footer -->
+        <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+          <button id="btn-quiz-check" class="btn-touch px-6 py-2.5 rounded-xl font-bold text-sm bg-orange-500 text-white hover:bg-orange-600 transition shadow-sm">
+            KIỂM TRA ĐÁP ÁN
+          </button>
+          <button id="btn-quiz-next" class="btn-touch hidden px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-900 text-white hover:bg-slate-800 transition">
+            CÂU TIẾP THEO ➔
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------- -->
+    <!-- TAB 5: BẢNG LMS & QUẢN TRỊ GIÁO VIÊN -->
+    <!-- ---------------------------------------- -->
+    <section id="tab-lms" class="tab-pane hidden space-y-6">
+      <!-- Role Toggle / Status Banner -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="lms-role-badge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-blue-100 text-blue-700">Học sinh</span>
+            <h2 id="lms-user-title" class="text-xl font-extrabold text-slate-900">Hồ sơ Học tập Cá nhân</h2>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">Lưu trữ lịch sử thi đấu đua xe, tỷ lệ làm bài đúng và bảng tổng hợp giáo viên.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="btn-export-csv" class="px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition flex items-center gap-1 shadow-sm">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Xuất file Excel/CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Teacher Analytics Overview (Visible to Teacher) -->
+      <div id="teacher-analytics-panel" class="hidden space-y-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-[11px] font-bold text-slate-400 uppercase">Tổng số học sinh</p>
+            <p id="stat-total-students" class="text-3xl font-black text-slate-900 mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-[11px] font-bold text-slate-400 uppercase">Lượt làm bài / Đua</p>
+            <p id="stat-total-exams" class="text-3xl font-black text-orange-600 mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-[11px] font-bold text-slate-400 uppercase">Điểm trung bình</p>
+            <p id="stat-avg-score" class="text-3xl font-black text-blue-600 mt-1">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-[11px] font-bold text-slate-400 uppercase">Độ chính xác TB</p>
+            <p id="stat-avg-accuracy" class="text-3xl font-black text-emerald-600 mt-1">0%</p>
+          </div>
+        </div>
+
+        <!-- Accuracy by Question Type Bar -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+            <i data-lucide="pie-chart" class="w-5 h-5 text-orange-500"></i>
+            Tỷ lệ trả lời đúng theo 5 dạng câu hỏi
+          </h3>
+          <p class="text-xs text-slate-500">Giúp giáo viên phân tích phần kiến thức học sinh nắm chắc hoặc còn hay nhầm lẫn:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-2 text-center text-xs font-bold">
+            <div class="p-3 rounded-xl bg-orange-50 border border-orange-200">
+              <p class="text-slate-600">Trắc nghiệm</p>
+              <p class="text-xl font-black text-orange-600 mt-1" id="type-acc-mcq">84%</p>
+            </div>
+            <div class="p-3 rounded-xl bg-blue-50 border border-blue-200">
+              <p class="text-slate-600">Đúng / Sai</p>
+              <p class="text-xl font-black text-blue-600 mt-1" id="type-acc-tf">88%</p>
+            </div>
+            <div class="p-3 rounded-xl bg-amber-50 border border-amber-200">
+              <p class="text-slate-600">Điền khuyết</p>
+              <p class="text-xl font-black text-amber-600 mt-1" id="type-acc-fib">68%</p>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+              <p class="text-slate-600">Ghép cột</p>
+              <p class="text-xl font-black text-emerald-600 mt-1" id="type-acc-mat">82%</p>
+            </div>
+            <div class="p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+              <p class="text-slate-600">Tự luận tính</p>
+              <p class="text-xl font-black text-indigo-600 mt-1" id="type-acc-sa">62%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exam History Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+          <h3 class="font-extrabold text-slate-900 text-base">Bảng Kết quả & Lịch sử Học sinh</h3>
+          <button id="btn-clear-history" class="text-xs text-red-500 hover:text-red-700 font-semibold transition">
+            Xóa dữ liệu thi
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+              <tr>
+                <th class="p-3">Học sinh</th>
+                <th class="p-3">Lớp</th>
+                <th class="p-3">Thời gian</th>
+                <th class="p-3">Chế độ</th>
+                <th class="p-3 text-right">Điểm</th>
+                <th class="p-3 text-right">Chính xác</th>
+                <th class="p-3 text-right">Thời lượng</th>
+              </tr>
+            </thead>
+            <tbody id="lms-records-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: ĐĂNG NHẬP / CHỌN TÀI KHOẢN -->
+  <!-- ========================================== -->
+  <div id="auth-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <h3 class="text-lg font-extrabold text-slate-900" id="auth-modal-title">Đăng nhập Học sinh</h3>
+        <button class="text-slate-400 hover:text-slate-600 p-1" onclick="app.closeAuthModal()">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Student Form -->
+      <form id="form-student-login" class="space-y-4 mt-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên học sinh:</label>
+          <input type="text" id="input-student-name" required placeholder="Ví dụ: Nguyễn Văn An" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-orange-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Lớp:</label>
+          <input type="text" id="input-student-class" value="7A1" placeholder="7A1, 7A2..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-orange-500">
+        </div>
+        <button type="submit" class="btn-touch w-full rounded-xl font-bold text-sm bg-orange-500 text-white hover:bg-orange-600 transition shadow-md shadow-orange-500/20">
+          VÀO HỌC NGAY
+        </button>
+        <div class="text-center pt-2">
+          <button type="button" class="text-xs text-blue-600 font-bold hover:underline" onclick="app.switchAuthMode('teacher')">
+            Bạn là Giáo viên? Đăng nhập tại đây
+          </button>
+        </div>
+      </form>
+
+      <!-- Teacher Form -->
+      <form id="form-teacher-login" class="space-y-4 mt-4 hidden">
+        <div class="bg-blue-50 p-3 rounded-xl border border-blue-200 text-xs text-blue-900 leading-relaxed">
+          Dành cho Giáo viên quản trị và xem phân tích LMS.
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Tên đăng nhập / Họ tên: <span class="text-rose-500">*</span></label>
+          <input type="text" id="input-teacher-name" required placeholder="Ví dụ: Thầy Minh, Cô Mai..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Mật khẩu: <span class="text-rose-500">*</span></label>
+          <input type="password" id="input-teacher-code" required placeholder="Nhập mật khẩu Giáo viên..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-blue-500">
+        </div>
+        <button type="submit" class="btn-touch w-full rounded-xl font-bold text-sm bg-blue-700 text-white hover:bg-blue-800 transition shadow-md shadow-blue-700/20">
+          XÁC THỰC GIÁO VIÊN
+        </button>
+        <div class="text-center pt-2">
+          <button type="button" class="text-xs text-orange-600 font-bold hover:underline" onclick="app.switchAuthMode('student')">
+            Quay lại Đăng nhập Học sinh
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: KẾT THÚC CUỘC ĐUA (GRAND PRIX PODIUM) -->
+  <!-- ========================================== -->
+  <div id="race-result-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 text-center shadow-2xl border border-slate-200 animate-in fade-in zoom-in">
+      <div class="w-20 h-20 mx-auto rounded-full bg-amber-100 text-amber-500 flex items-center justify-center text-4xl mb-3 shadow-inner">
+        🏆
+      </div>
+      <h3 class="text-2xl font-black text-slate-900" id="race-modal-winner-title">Chúc mừng Quán quân!</h3>
+      <p class="text-sm text-slate-500 mt-1" id="race-modal-winner-desc">Bạn đã xuất sắc hoàn thành chặng đua 1000m với tốc độ vượt trội.</p>
+
+      <div class="my-6 grid grid-cols-2 gap-3 text-left">
+        <div class="bg-orange-50 border border-orange-200 rounded-2xl p-4">
+          <p class="text-xs font-bold text-orange-800 uppercase" id="race-stat-p1-name">Học sinh</p>
+          <p class="text-2xl font-black text-orange-600 mt-1" id="race-stat-p1-score">0 điểm</p>
+          <span class="text-[11px] text-orange-700" id="race-stat-p1-streak">Combo cao nhất: 0</span>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4">
+          <p class="text-xs font-bold text-blue-800 uppercase" id="race-stat-p2-name">Bot AI</p>
+          <p class="text-2xl font-black text-blue-600 mt-1" id="race-stat-p2-score">0 điểm</p>
+          <span class="text-[11px] text-blue-700" id="race-stat-p2-dist">Khoảng cách: 1000m</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button class="btn-touch flex-1 rounded-xl font-bold text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 transition" onclick="app.closeRaceModal()">
+          ĐÓNG
+        </button>
+        <button class="btn-touch flex-1 rounded-xl font-bold text-sm bg-orange-500 hover:bg-orange-600 text-white transition shadow-md shadow-orange-500/20" onclick="app.restartRace()">
+          ĐUA LẠI NGAY 🏎️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts (Chạy chuẩn 100% không phụ thuộc máy chủ và không bị lỗi CORS) -->
+  <script src="js/app.bundle.js?v=4.7"></script>
+</body>
+</html>
